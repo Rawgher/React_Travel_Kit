@@ -12,11 +12,15 @@ function App() {
     setItemList((itemList) => itemList.filter((item) => item.id !== id));
   }
 
+  function handleItemPacked(id) {
+    setItemList((itemList) => itemList.map((item) => (item.id === id ? { ...item, packed: !item.packed } : item)));
+  }
+
   return (
     <div className="App">
       <Header />
       <Form onAddItems={handleAddItems} />
-      <List items={itemList} onRemoveItem={handleRemoveItem} />
+      <List items={itemList} onRemoveItem={handleRemoveItem} onItemPacked={handleItemPacked} />
       <Footer />
     </div>
   );
@@ -66,21 +70,22 @@ function Form({ onAddItems }) {
   );
 }
 
-function List({ items, onRemoveItem }) {
+function List({ items, onRemoveItem, onItemPacked }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} key={item.id} onRemoveItem={onRemoveItem} />
+          <Item item={item} key={item.id} onRemoveItem={onRemoveItem} onItemPacked={onItemPacked} />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item, onRemoveItem }) {
+function Item({ item, onRemoveItem, onItemPacked }) {
   return (
     <li>
+      <input type="checkbox" value={item.packed} onChange={() => onItemPacked(item.id)} />
       <span style={item.packed ? { textDecoration: 'line-through' } : {}}>
         {item.amount} {item.item}
       </span>
